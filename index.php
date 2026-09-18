@@ -1,3 +1,10 @@
+<?php
+ 
+  require_once "funciones.php";
+
+  echo formatearPrecio(5000)
+
+?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -26,6 +33,7 @@
 
     <section class="panel">
         <h2>Catálogo</h2>
+        <h3> Prueba de función <?php echo formatearPrecio(6000); ?>  </h3>
        
     </section>
 
