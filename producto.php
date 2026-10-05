@@ -355,31 +355,484 @@ if ($id === false || $id < 1) {
         </nav>
     </div>
 </header>
-
 <main class="contenedor">
 
-    <article class="producto">
+    <?php
+    /*
+    |--------------------------------------------------------------------------
+    | MOSTRAR ERROR O MOSTRAR PRODUCTO
+    |--------------------------------------------------------------------------
+    |
+    | En la parte PHP anterior de la página hemos preparado dos variables
+    | importantes:
+    |
+    |     $error
+    |     $producto
+    |
+    | La variable $error comienza normalmente como una cadena vacía:
+    |
+    |     $error = "";
+    |
+    | Si durante el procesamiento ocurre algún problema, guardamos dentro
+    | de ella un mensaje.
+    |
+    | Por ejemplo:
+    |
+    |     $error = "El producto no existe";
+    |
+    | Por tanto, en esta parte del HTML tenemos que decidir:
+    |
+    |     ¿Ha ocurrido algún error?
+    |
+    |             |
+    |       +-----+-----+
+    |       |           |
+    |      SÍ          NO
+    |       |           |
+    |       v           v
+    |   mostramos    mostramos
+    |    el error    el producto
+    |
+    |
+    | Para tomar esta decisión utilizamos un if de PHP.
+    |
+    | En lugar de utilizar la sintaxis tradicional:
+    |
+    |     if (condicion) {
+    |
+    |     } else {
+    |
+    |     }
+    |
+    | utilizamos la SINTAXIS ALTERNATIVA de PHP:
+    |
+    |     if (condicion):
+    |
+    |     else:
+    |
+    |     endif;
+    |
+    | Esta sintaxis resulta especialmente cómoda cuando mezclamos
+    | PHP con HTML.
+    |
+    |--------------------------------------------------------------------------
+    */
+    ?>
 
-        <h2>Teclado mecánico</h2>
 
-        <p>Categoría: Periféricos</p>
+    <?php if ($error !== ""): ?>
 
-        <p class="precio">79,90 €</p>
+        <?php
+        /*
+        |--------------------------------------------------------------------------
+        | CASO 1: EXISTE UN ERROR
+        |--------------------------------------------------------------------------
+        |
+        | La condición:
+        |
+        |     $error !== ""
+        |
+        | significa:
+        |
+        |     "¿El contenido de $error es diferente de una cadena vacía?"
+        |
+        | !== es el operador de desigualdad estricta.
+        |
+        | Por ejemplo:
+        |
+        |     $error = "";
+        |
+        |     $error !== ""      -> false
+        |
+        | No entraríamos en este bloque.
+        |
+        |
+        | Pero:
+        |
+        |     $error = "El producto no existe";
+        |
+        |     $error !== ""      -> true
+        |
+        | Entraríamos en este bloque y mostraríamos el error.
+        |
+        |--------------------------------------------------------------------------
+        */
+        ?>
 
-        <p>Stock: 7</p>
+        <section class="panel">
 
-        <p>
-            Estado:
-            <span class="estado disponible">Disponible</span>
-        </p>
+            <h2>Error</h2>
 
-        <div class="acciones">
-            <a class="boton" href="compra.php">
-                Comprar
-            </a>
-        </div>
+            <?php
+            /*
+            |--------------------------------------------------------------------------
+            | MOSTRAMOS EL MENSAJE DE ERROR
+            |--------------------------------------------------------------------------
+            |
+            | <?= ... ?> es la sintaxis corta de echo.
+            |
+            | Es decir:
+            |
+            |     <?= escapar($error) ?>
+            |
+            | equivale aproximadamente a:
+            |
+            |     <?php echo escapar($error); ?>
+            |
+            |
+            | Antes de mostrar el contenido utilizamos:
+            |
+            |     escapar($error)
+            |
+            | Esta función prepara los caracteres especiales para mostrarlos
+            | correctamente como texto dentro del HTML.
+            |
+            | Es una buena práctica escapar el texto dinámico justo en el
+            | momento en el que lo vamos a introducir en HTML.
+            |
+            | Podemos recordar la regla:
+            |
+            |     VALIDAR AL ENTRAR
+            |     ESCAPAR AL SALIR
+            |
+            |--------------------------------------------------------------------------
+            */
+            ?>
 
-    </article>
+            <p><?= escapar($error) ?></p>
+
+
+            <?php
+            /*
+             * Este enlace permite al usuario regresar a la página principal.
+             *
+             * Como href="index.php" es un valor escrito directamente por
+             * nosotros y no procede del usuario, no necesitamos escapar nada.
+             */
+            ?>
+
+            <a class="boton" href="index.php">Volver</a>
+
+        </section>
+
+
+    <?php else: ?>
+
+        <?php
+        /*
+        |--------------------------------------------------------------------------
+        | CASO 2: NO EXISTE NINGÚN ERROR
+        |--------------------------------------------------------------------------
+        |
+        | Si hemos llegado al else significa que:
+        |
+        |     $error === ""
+        |
+        | Es decir, no tenemos ningún mensaje de error.
+        |
+        | En nuestro flujo del programa esto significa que previamente:
+        |
+        |     1. El ID recibido era válido.
+        |
+        |     2. Hemos buscado el producto.
+        |
+        |     3. El producto existe.
+        |
+        | Por tanto podemos utilizar:
+        |
+        |     $producto
+        |
+        | para generar su ficha.
+        |
+        |--------------------------------------------------------------------------
+        */
+        ?>
+
+
+        <article class="producto">
+
+            <?php
+            /*
+            |--------------------------------------------------------------------------
+            | NOMBRE DEL PRODUCTO
+            |--------------------------------------------------------------------------
+            |
+            | $producto es un array asociativo.
+            |
+            | Por ejemplo:
+            |
+            |     $producto = [
+            |         "nombre"    => "Teclado mecánico",
+            |         "categoria" => "Periféricos",
+            |         "precio"    => 7990,
+            |         "stock"     => 7
+            |     ];
+            |
+            | Para acceder al nombre utilizamos:
+            |
+            |     $producto["nombre"]
+            |
+            | Como el nombre es TEXTO dinámico que vamos a introducir dentro
+            | del HTML, utilizamos escapar().
+            |
+            | Si el nombre fuese:
+            |
+            |     Teclado <Pro>
+            |
+            | escapar() evita que <Pro> sea interpretado como una etiqueta
+            | HTML.
+            |
+            |--------------------------------------------------------------------------
+            */
+            ?>
+
+            <h2><?= escapar($producto["nombre"]) ?></h2>
+
+
+            <?php
+            /*
+            |--------------------------------------------------------------------------
+            | CATEGORÍA DEL PRODUCTO
+            |--------------------------------------------------------------------------
+            |
+            | Hacemos exactamente lo mismo con la categoría.
+            |
+            | Obtenemos:
+            |
+            |     $producto["categoria"]
+            |
+            | y como es una cadena de texto que vamos a insertar en HTML,
+            | la escapamos antes de mostrarla.
+            |
+            |--------------------------------------------------------------------------
+            */
+            ?>
+
+            <p>
+                Categoría: <?= escapar($producto["categoria"]) ?>
+            </p>
+
+
+            <?php
+            /*
+            |--------------------------------------------------------------------------
+            | PRECIO DEL PRODUCTO
+            |--------------------------------------------------------------------------
+            |
+            | El precio está almacenado como un valor numérico.
+            |
+            | No queremos mostrar directamente algo como:
+            |
+            |     7990
+            |
+            | Queremos mostrarlo con un formato adecuado:
+            |
+            |     79,90 €
+            |
+            | Para eso utilizamos nuestra función:
+            |
+            |     formatearPrecio(...)
+            |
+            | Le pasamos el precio:
+            |
+            |     $producto["precio"]
+            |
+            | y la función devuelve el precio preparado para mostrarlo.
+            |
+            | Por ejemplo:
+            |
+            |     7990
+            |       |
+            |       v
+            |     formatearPrecio(7990)
+            |       |
+            |       v
+            |     "79,90 €"
+            |
+            | En el proyecto original este campo se llamaba:
+            |
+            |     precio_centimos
+            |
+            | Si sigues utilizando aquella estructura de datos deberías usar:
+            |
+            |     $producto["precio_centimos"]
+            |
+            |--------------------------------------------------------------------------
+            */
+            ?>
+
+            <p class="precio">
+                <?= formatearPrecio($producto["precio"]) ?>
+            </p>
+
+
+            <?php
+            /*
+            |--------------------------------------------------------------------------
+            | STOCK DEL PRODUCTO
+            |--------------------------------------------------------------------------
+            |
+            | Obtenemos el número de unidades disponibles:
+            |
+            |     $producto["stock"]
+            |
+            | Por ejemplo:
+            |
+            |     7
+            |
+            | En este caso sabemos que stock contiene un valor numérico
+            | controlado por nuestra aplicación.
+            |
+            | Por eso podemos mostrar directamente:
+            |
+            |     <?= $producto["stock"] ?>
+            |
+            |--------------------------------------------------------------------------
+            */
+            ?>
+
+            <p>
+                Stock: <?= $producto["stock"] ?>
+            </p>
+
+
+            <?php
+            /*
+            |--------------------------------------------------------------------------
+            | ESTADO VISUAL DEL STOCK
+            |--------------------------------------------------------------------------
+            |
+            | Aquí hacemos dos cosas diferentes utilizando el mismo stock:
+            |
+            |     1. Decidimos qué CLASE CSS utilizar.
+            |
+            |     2. Decidimos qué TEXTO mostrar.
+            |
+            |
+            | Por ejemplo, imaginemos:
+            |
+            |     stock = 7
+            |
+            | Nuestra función:
+            |
+            |     obtenerClaseEstado(7)
+            |
+            | puede devolver:
+            |
+            |     "disponible"
+            |
+            | Y:
+            |
+            |     obtenerEstadoStock(7)
+            |
+            | puede devolver:
+            |
+            |     "Disponible"
+            |
+            |
+            | De esta forma PHP podría terminar generando:
+            |
+            |     <p class="estado disponible">
+            |         Estado: Disponible
+            |     </p>
+            |
+            |
+            | Si el stock fuese bajo:
+            |
+            |     obtenerClaseEstado(3)
+            |
+            | podría devolver:
+            |
+            |     "aviso"
+            |
+            | y PHP generaría:
+            |
+            |     <p class="estado aviso">
+            |         Estado: Últimas unidades
+            |     </p>
+            |
+            |
+            | IMPORTANTE:
+            |
+            | PHP NO está cambiando el CSS.
+            |
+            | PHP simplemente está GENERANDO el nombre de una clase CSS.
+            |
+            | Después será el navegador quien aplique las reglas CSS
+            | correspondientes a esa clase.
+            |
+            |--------------------------------------------------------------------------
+            */
+            ?>
+
+            <p class="estado <?= obtenerClaseEstado($producto["stock"]); ?>">
+
+                Estado:
+
+                <?=
+                    /*
+                     * Llamamos a obtenerEstadoStock() para obtener el texto
+                     * correspondiente al número de unidades disponibles.
+                     *
+                     * Ejemplos:
+                     *
+                     *     stock = 0  -> "Agotado"
+                     *
+                     *     stock = 3  -> "Últimas unidades"
+                     *
+                     *     stock = 7  -> "Disponible"
+                     */
+                    obtenerEstadoStock($producto["stock"]);
+                ?>
+
+            </p>
+
+        </article>
+
+
+    <?php
+    /*
+    |--------------------------------------------------------------------------
+    | FIN DEL IF
+    |--------------------------------------------------------------------------
+    |
+    | endif; cierra el if que comenzamos anteriormente:
+    |
+    |     if ($error !== ""):
+    |
+    |         mostramos error
+    |
+    |     else:
+    |
+    |         mostramos producto
+    |
+    |     endif;
+    |
+    | La gran ventaja es que SOLO se muestra uno de los dos bloques.
+    |
+    | Nunca mostramos simultáneamente:
+    |
+    |     ERROR + PRODUCTO
+    |
+    | El flujo es:
+    |
+    |                         $error
+    |                            |
+    |                            v
+    |                       ¿está vacío?
+    |                            |
+    |                  +---------+---------+
+    |                  |                   |
+    |                 NO                  SÍ
+    |                  |                   |
+    |                  v                   v
+    |          <section> Error      <article> Producto
+    |
+    |--------------------------------------------------------------------------
+    */
+    ?>
+
+    <?php endif; ?>
 
 </main>
 
