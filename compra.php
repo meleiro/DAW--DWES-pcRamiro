@@ -1,3 +1,38 @@
+<?php
+
+    require_once "datos.php";
+    require_once "funciones.php";
+
+    $errores = [];
+    $compraRealizada = false;
+    $resultadoCompra = null;
+    $productoSeleccionado = null;
+    $nombre = "";
+    $email = "";
+    $unidades = 1;
+    $productoId = null;
+
+    if ($_SERVER["REQUEST_METHOD"] === "POST") {
+
+       $nombre = leerCadena($_POST, "nombre");
+       if ($nombre === "") {
+          $errores[] = "Debes de introducir un nombre";
+       }
+
+       $emailBruto = leerCadena($_POST, "email");
+       $emailValidado = filter_var($emailBruto, FILTER_VALIDATE_EMAIL);
+       if ( $emailValidado === false){
+         $errores[] = "Correo electrónico con formato incorrecto";
+       } else {
+        $email = $emailValidado;
+       }
+
+    }
+
+
+?>
+
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -22,86 +57,42 @@
 
 <main class="contenedor">
 
-    <section class="panel">
+  <form class="formulario" action="compra.php" method="POST">
 
-        <!--
-            Este formulario muestra la parte de cliente.
-            Sin PHP no existe código de servidor que valide,
-            calcule o procese realmente los datos.
-        -->
-        <form class="formulario" action="compra.php" method="POST">
+  <div class="campo">
+        <label for="nombre">Nombre</label>
+        <input type="text" id="nombre" name="nombre" value="<?= escapar($nombre) ?>">
+  </div>
+  <div class="campo">
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" value="<?= escapar($email) ?>">
+  </div>
+  
+        <label for="email">Producto</label>
+        <select id="producto" name="producto">
+            <option value="">Selecciona un producto</option>
+            <?php foreach ($productos as $producto): ?>
+                <?php $seleccionado = $productoId === $producto["id"]; ?>
+                   <option value="<?= $producto["id"] ?>" <?= $seleccionado ? "selected" : "" ?>>
 
-            <div class="campo">
-                <label for="nombre">Nombre</label>
+                            <?= escapar($producto["nombre"]) ?> - <?= formatearPrecio($producto["precio"]) ?>
 
-                <input
-                    type="text"
-                    id="nombre"
-                    name="nombre"
-                    placeholder="Tu nombre"
-                >
-            </div>
+                   </option> 
+            <?php endforeach; ?>    
+        </select>
+       <div class="campo">
+            <label for="unidades">Unidades</label>
+            <input type="number" id="unidades" name="unidades" value="<?= $unidades ?>">
+       </div>
+       <div><button type="submit">Calcular compra</button></div>
 
-            <div class="campo">
-                <label for="email">Correo electrónico</label>
+  
 
-                <input
-                    type="email"
-                    id="email"
-                    name="email"
-                    placeholder="nombre@ejemplo.com"
-                >
-            </div>
 
-            <div class="campo">
-                <label for="producto">Producto</label>
 
-                <select id="producto" name="producto">
+  </form>
 
-                    <option value="">
-                        Selecciona un producto
-                    </option>
-
-                    <option value="1">
-                        Teclado mecánico — 79,90 €
-                    </option>
-
-                    <option value="2">
-                        Ratón gaming — 39,90 €
-                    </option>
-
-                    <option value="3">
-                        Monitor 27 pulgadas — 219,90 €
-                    </option>
-
-                    <option value="4">
-                        Auriculares USB — 49,90 €
-                    </option>
-
-                </select>
-            </div>
-
-            <div class="campo">
-                <label for="unidades">Unidades</label>
-
-                <input
-                    type="number"
-                    id="unidades"
-                    name="unidades"
-                    min="1"
-                    value="1"
-                >
-            </div>
-
-            <div>
-                <button type="submit">
-                    Enviar formulario
-                </button>
-            </div>
-
-        </form>
-
-    </section>
+    
 
 </main>
 
