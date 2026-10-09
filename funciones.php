@@ -963,3 +963,34 @@ function leerCadena(
      */
     return $valor;
 }
+
+
+function calcularCompra(
+        int $precio,
+        int $unidades
+) : array {
+
+        $subtotal = $precio *  $unidades;
+
+        $descuento = 0;
+
+        if ($unidades >= UNIDADES_DESCUENTO){
+
+            $descuento = (int) round($subtotal * DESCUENTO_CANTIDAD); 
+        }
+
+        $base = $subtotal - $descuento;
+
+        $iva = (int) round ($base * IVA_GENERAL);
+
+        $total = $base + $iva;
+
+        return [
+            "subtotal" => $subtotal,
+            "descuento" => $descuento,
+            "base" => $base,
+            "iva" => $iva,
+            "total" => $total
+        ];
+
+}
