@@ -1784,17 +1784,10 @@ No queremos que tenga que volver a empezar desde cero.
 
 
     PISTA:
+    
 
-        <?php if (CONDICION): ?>
 
-            HTML que se muestra cuando la condición es verdadera.
-
-        <?php else: ?>
-
-            HTML que se muestra cuando es falsa.
-
-        <?php endif; ?>
-
+       
 
     ¿QUÉ CONDICIÓN DEBÉIS UTILIZAR?
 
@@ -2226,6 +2219,43 @@ No queremos que tenga que volver a empezar desde cero.
     ===========================================================================
     -->
 
+    <?php if ($compraRealizada): ?>
+        <section class="panel">
+
+            <h2>Compra realizada con éxito </h2>
+            <table class="resumen">
+                <tr><th>Cliente</th><td><?= escapar($nombre) ?></td></tr>
+                <tr><th>Email</th><td><?= escapar($email) ?></td></tr>
+                <tr><th>Producto</th><td><?= escapar($productoSeleccionado["nombre"]) ?></td></tr>
+                <tr><th>Precio Unitario</th><td><?= formatearPrecio($productoSeleccionado["precio"]) ?></td></tr>
+                <tr><th>Unidades</th><td><?= $unidades ?></td></tr>
+                <tr><th>Subtotal</th><td><?= formatearPrecio($resultadoCompra["subtotal"]) ?></td></tr>
+                <?php if ($resultadoCompra["descuento"] > 0):  ?>
+                     <tr><th>Descuento</th><td><?= formatearPrecio($resultadoCompra["descuento"]) ?></td></tr>
+                <?php endif; ?>
+                <tr><th>Base</th><td><?= formatearPrecio($resultadoCompra["base"]) ?></td></tr>
+                <tr><th>IVA</th><td><?= formatearPrecio($resultadoCompra["iva"]) ?></td></tr>
+                <tr><th>Total</th><td><?= formatearPrecio($resultadoCompra["total"]) ?></td></tr>
+            </table>
+            <p><a class="boton" href="compra.php">Realizar otra compra</a><p>
+        </section>
+    <?php else: ?>
+        <?php if ($errores !== []): ?>
+                <section class="errores">
+                    <h2>Revisa los siguientes errores:</h2>
+                    <ul>
+                        <?php foreach ($errores as $error): ?>
+
+                            <li><? escapar($error) ?> </li>
+
+                        <?php endforeach; ?>
+                    </ul>                       
+                </section>
+        <?php endif; ?>
+
+
+
+    <section class="panel">    
 
     <form class="formulario" action="compra.php" method="POST">
 
@@ -2731,6 +2761,7 @@ No queremos que tenga que volver a empezar desde cero.
 
         </div>
 
+        <p>A partir de <strong> <?= UNIDADES_DESCUENTO ?> </strong> unidades se aplica <strong> <?= DESCUENTO_CANTIDAD * 100 ?> %</strong> de descuento </p>
 
         <!--
         =======================================================================
@@ -2781,6 +2812,9 @@ No queremos que tenga que volver a empezar desde cero.
 
 
     </form>
+   </section>
+
+    <?php endif; ?>
 
 
     <!--
@@ -2803,15 +2837,6 @@ No queremos que tenga que volver a empezar desde cero.
 
     RECORDATORIO:
 
-        <?php if (CONDICION): ?>
-
-            ...
-
-        <?php else: ?>
-
-            ...
-
-        <?php endif; ?>
 
 
     Si olvidamos cerrar el if, PHP producirá un error de sintaxis.
