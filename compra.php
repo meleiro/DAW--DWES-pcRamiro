@@ -2246,7 +2246,7 @@ No queremos que tenga que volver a empezar desde cero.
                     <ul>
                         <?php foreach ($errores as $error): ?>
 
-                            <li><? escapar($error) ?> </li>
+                            <li><?= escapar($error) ?> </li>
 
                         <?php endforeach; ?>
                     </ul>                       
